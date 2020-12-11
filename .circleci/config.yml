@@ -1,0 +1,29 @@
+version: 2
+
+workflows:
+  version: 2
+  default:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: release
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - run:
+          command: npx lerna bootstrap
+          name: Bootstrap repository
+      - run:
+          command: npx lerna run test
+          name: Run rests in all packages
+      - run:
+          command: npx lerna run build
+          name: Run build in all packages
